@@ -14,7 +14,7 @@ if(isset($_GET['operation']))
     if($_GET['operation'] == "login")
     {
         session_start();
-        if(isset($_SESSION['user']))
+        if(isset($_SESSION['user']) or ($_POST['user'] and $_POST['password']))
         {
             $username = "";
             $user = "";
