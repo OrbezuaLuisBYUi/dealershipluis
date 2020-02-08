@@ -17,10 +17,7 @@ class model_user{
 
     public function login($user,$password)
     {
-        $connection = new Connection();
-        $conn = $connection->connection();
-
-        $resultlogin = pg_query($conn,"select use_name,use_lastname,use_username,use_password,use_profile from users where UPPER(use_username) = UPPER('".$user."') and UPPER(use_password) = UPPER('".$password."')");
+        $resultlogin = pg_query($this->db,"select use_name,use_lastname,use_username,use_password,use_profile from users where UPPER(use_username) = UPPER('".$user."') and UPPER(use_password) = UPPER('".$password."')");
         $data = pg_fetch_array($resultlogin);
         $name = $data['use_name'];
         $lastname = $data['use_lastname'];
@@ -28,19 +25,21 @@ class model_user{
         $password = $data['use_password'];
         $profile = $data['use_profile'];
 
-        session_start();
-        $_SESSION['user'] = $username;
-        $_SESSION['password']= $password;
-        $_SESSION['profile']= $profile;
+        if($username != "")
+        {
+            session_destroy();
+            session_start();
+
+            $_SESSION['user'] = $username;
+            $_SESSION['password']= $password;
+            $_SESSION['profile']= $profile;
+        }
 
         return $name." ".$lastname;
     }
 
     public function signup()
     {
-        $connection = new Connection();
-        $conn = $connection->connection();
-
         $user = "";
         $password = "";
         $name = "";
@@ -56,7 +55,7 @@ class model_user{
         if(isset($_POST['phone'])){ $phone = $_POST['phone']; }
         if(isset($_POST['address'])){ $address = $_POST['address']; }
 
-        $resultsignup = pg_query($conn,"insert into users(use_username,use_password,use_name,use_lastname,use_phone,use_email,use_address,use_profile) values('".$user."','".$password."','".$name."','".$lastname."','".$phone."','".$email."','".$address."',2)");
+        $resultsignup = pg_query($this->db,"insert into users(use_username,use_password,use_name,use_lastname,use_phone,use_email,use_address,use_profile) values('".$user."','".$password."','".$name."','".$lastname."','".$phone."','".$email."','".$address."',2)");
 
         return $resultsignup;
     }

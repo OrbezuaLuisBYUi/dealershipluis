@@ -13,9 +13,10 @@ if(isset($_GET['operation']))
 {
     if($_GET['operation'] == "login")
     {
-        $username = "";
-        if(!isset($_SESSION['user']))
+        session_start();
+        if(isset($_SESSION['user']))
         {
+            $username = "";
             $user = "";
             $password = "";
             if(isset($_POST['user'])){ $user = $_POST['user']; }
@@ -29,53 +30,54 @@ if(isset($_GET['operation']))
         }
     }
     else
-    if($_GET['operation'] == "logout")
-    {
-        if(isset($_SESSION['user']))
+        if($_GET['operation'] == "logout")
         {
-            session_destroy();
-        }
-        require_once("views/dealerview.phtml");
-    }
-    else
-    if($_GET['operation'] == "signup")
-    {
-        $resultsignup = $usermodel->signup();
-        if($resultsignup > 0)
-        {
-            $user = "";
-            $password = "";
-
-            if(isset($_POST['user'])){ $user = $_POST['user']; }
-            if(isset($_POST['password'])){ $password = $_POST['password']; }
-            $usermodel->login($user,$password);
-        }
-        else
-        {
-            echo "<script>alert('There was an error when you try the registration')</script>";
-        }
-        require_once("views/dealerview.phtml");
-    }
-    else
-    if($_GET['operation'] == "buy")
-    {
-        require_once("views/dealerview.phtml");
-        if(isset($_SESSION['user']))
-        {
-            $username = $_SESSION['user'];
-            if($username == "")
+            if(isset($_SESSION['user']))
             {
-                echo "<script>if(confirm('To buy you need to sign up')){ $('#modalsignup').modal('toggle');$('#modalsignup').modal('show'); }else{ $('#modallogin').modal('toggle');$('#modallogin').modal('show'); }</script>";
+                session_destroy();
             }
+            require_once("views/dealerview.phtml");
         }
         else
-        {
-            echo "<script>if(confirm('To buy you need to sign up')){ $('#modalsignup').modal('toggle');$('#modalsignup').modal('show'); }else{ $('#modallogin').modal('toggle');$('#modallogin').modal('show'); }</script>";
-        }
+            if($_GET['operation'] == "signup")
+            {
+                $resultsignup = $usermodel->signup();
+                if($resultsignup > 0)
+                {
+                    $user = "";
+                    $password = "";
 
-        $car_id = $_GET['car_id'];
-        $result = "";
-    }
+                    if(isset($_POST['user'])){ $user = $_POST['user']; }
+                    if(isset($_POST['password'])){ $password = $_POST['password']; }
+                    session_start();
+                    $usermodel->login($user,$password);
+                }
+                else
+                {
+                    echo "<script>alert('There was an error when you try the registration')</script>";
+                }
+                require_once("views/dealerview.phtml");
+            }
+            else
+                if($_GET['operation'] == "buy")
+                {
+                    require_once("views/dealerview.phtml");
+                    if(isset($_SESSION['user']))
+                    {
+                        $username = $_SESSION['user'];
+                        if($username == "")
+                        {
+                            echo "<script>if(confirm('To buy you need to sign up')){ $('#modalsignup').modal('toggle');$('#modalsignup').modal('show'); }else{ $('#modallogin').modal('toggle');$('#modallogin').modal('show'); }</script>";
+                        }
+                    }
+                    else
+                    {
+                        echo "<script>if(confirm('To buy you need to sign up')){ $('#modalsignup').modal('toggle');$('#modalsignup').modal('show'); }else{ $('#modallogin').modal('toggle');$('#modallogin').modal('show'); }</script>";
+                    }
+
+                    $car_id = $_GET['car_id'];
+                    $result = "";
+                }
 }
 else
 {

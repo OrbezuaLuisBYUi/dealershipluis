@@ -44,3 +44,5 @@ CREATE TABLE "public"."users_cars" (
   usc_cash float NOT NULL,
   lon_key_inside int4 NOT NULL REFERENCES public.loan(lon_key_inside)
 ) WITH (OIDS=FALSE);
+
+select use_name,use_lastname,use_username,use_password,use_profile from users where UPPER(use_username) = UPPER('luis') and UPPER(use_password) = UPPER('luis123')

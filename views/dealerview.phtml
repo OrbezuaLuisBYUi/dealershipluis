@@ -34,15 +34,20 @@ if(isset($_SESSION['profile']))
 <nav class="navbar navbar-expand-lg navbar-dark bg-info">
     <div class="left">
         <a class="navbar-brand" href="#">DEALERSHIP </a>|
+
         <?php
         if(isset($username))
         {
+            if($username != "" and ($profile == 1 or $profile == 2))
+            {
+                echo '<a class="navbar-brand" href="#">&nbsp;CARS </a>|';
+            }
+
             if($username != "" and $profile == 1)
             {
                 ?>
-                <a class="navbar-brand" href="#">&nbsp;CARS </a>|
                 <a class="navbar-brand" href="#">&nbsp;USERS </a>|
-                <?php
+            <?php
             }
         }
         ?>
@@ -61,7 +66,7 @@ if(isset($_SESSION['profile']))
                 ?>
                 <a class="navbar-brand text-white cursor" data-toggle="modal" data-target="#modallogin">LOGIN</a>|
                 <a class="navbar-brand text-white cursor" data-toggle="modal" data-target="#modalsignup">&nbsp;SIGN UP </a>
-                <?php
+            <?php
             }
         }
         ?>
