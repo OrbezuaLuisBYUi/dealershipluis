@@ -1,3 +1,20 @@
+<?php
+$username = "";
+$password = "";
+$profile = "";
+if(isset($_SESSION['user']))
+{
+    $username = $_SESSION['user'];
+}
+if(isset($_SESSION['password']))
+{
+    $password = $_SESSION['password'];
+}
+if(isset($_SESSION['profile']))
+{
+    $profile = $_SESSION['profile'];
+}
+?>
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -15,24 +32,127 @@
 </head>
 <body class="margin">
 <nav class="navbar navbar-expand-lg navbar-dark bg-info">
-    <a class="navbar-brand" href="#">DEALERSHIP </a>|
-
-    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
-                <a class="nav-link" href="#"> <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#"></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#"></a>
-            </li>
-        </ul>
+    <div class="left">
+        <a class="navbar-brand" href="#">DEALERSHIP </a>|
+        <?php
+        if(isset($username))
+        {
+            if($username != "" and $profile == 1)
+            {
+                ?>
+                <a class="navbar-brand" href="#">&nbsp;CARS </a>|
+                <a class="navbar-brand" href="#">&nbsp;USERS </a>|
+                <?php
+            }
+        }
+        ?>
+    </div>
+    <div class="right">
+        <?php
+        if(isset($username))
+        {
+            if($username != "")
+            {
+                echo '<a class="navbar-brand text-white">Welcome '.$username."</a>";
+                echo '<a href="index.php?operation=logout" class="navbar-brand text-white cursor">LOGOUT</a>';
+            }
+            else
+            {
+                ?>
+                <a class="navbar-brand text-white cursor" data-toggle="modal" data-target="#modallogin">LOGIN</a>|
+                <a class="navbar-brand text-white cursor" data-toggle="modal" data-target="#modalsignup">&nbsp;SIGN UP </a>
+                <?php
+            }
+        }
+        ?>
     </div>
 </nav>
-<div>
-CONTENT IN CONSTRUCTION
+<!-- Modal -->
+<div class="modal fade" id="modallogin" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">LOGIN</h4>
+                <button type="button" class="close" data-dismiss="modal">Go to Dealership</button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="<?php echo htmlspecialchars("index.php?operation=login"); ?>">
+                    User:<br>
+                    <input name="user" type="text" class="form-control" placeholder="User"><br>
+                    Password:<br>
+                    <input name="password" type="password" class="form-control" placeholder="Password"><br>
+                    <button type="submit" class="btn btn-info form-control">LOGIN</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="modalsignup" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">SIGN UP</h4>
+                <button type="button" class="close" data-dismiss="modal">Go to Dealership</button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="<?php echo htmlspecialchars("index.php?operation=signup"); ?>">
+                    *Username:<br>
+                    <input name="user" type="text" class="form-control" placeholder="User">
+                    *Password:<br>
+                    <input name="password" type="password" class="form-control" placeholder="Password">
+                    *Name:<br>
+                    <input name="name" type="text" class="form-control" placeholder="Name">
+                    LastName:<br>
+                    <input name="lastname" type="text" class="form-control" placeholder="LastName">
+                    *Email:<br>
+                    <input name="email" type="text" class="form-control" placeholder="Email">
+                    Phone:<br>
+                    <input name="phone" type="text" class="form-control" placeholder="Phone">
+                    Address:<br>
+                    <input name="address" type="text" class="form-control" placeholder="Address"><br>
+                    <button type="submit" class="btn btn-info form-control">SIGNUP</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="row">
+    <?php
+    $cars = $carmodel->showcars();
+    foreach($cars as $key)
+    {
+        ?>
+        <div class="col-md-4">
+            <div class="card mb-4 box-shadow">
+                <img class="card-img-top" data-src="sources/images/<?php echo $key['car_img']; ?>" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;" src="sources/images/<?php echo $key['car_img']; ?>" data-holder-rendered="true">
+                <div class="card-body">
+                    <p class="card-text descriptionCar"><?php echo $key['car_brand']; ?></p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <a href="index.php?operation=buy&car_id=<?php echo $key['car_key_inside']; ?>" class="btn btn-success text-white cursor form-control">
+                                BUY
+                            </a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php
+    }
+    ?>
 </div>
 </body>
 </html>

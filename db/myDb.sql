@@ -17,6 +17,8 @@ CREATE TABLE "public"."cars" (
 
 CREATE TABLE "public"."users" (
   use_key_inside SERIAL NOT NULL PRIMARY KEY,
+  use_username varchar(20) NOT NULL,
+  use_password varchar(20) NOT NULL,
   use_name varchar(100) NOT NULL,
   use_lastname varchar(100) NOT NULL,
   use_phone varchar(25) NOT NULL,
