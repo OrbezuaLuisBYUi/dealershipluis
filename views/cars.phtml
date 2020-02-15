@@ -45,7 +45,7 @@ if(isset($_SESSION['iduser']))
         {
             if($username != "" and ($profile == 1 or $profile == 2))
             {
-                echo '<a class="navbar-brand" href="index.php?operation=gotocars">&nbsp;CARS </a>|';
+                echo '<a class="navbar-brand" href="#">&nbsp;CARS </a>|';
             }
 
             if($username != "" and $profile == 1)
@@ -77,23 +77,52 @@ if(isset($_SESSION['iduser']))
         ?>
     </div>
 </nav>
-<!-- Modal -->
-<div class="modal fade" id="modallogin" role="dialog">
+<!-- Modal to new car -->
+<div class="modal fade" id="modalnewcar" role="dialog">
     <div class="modal-dialog">
 
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">LOGIN</h4>
+                <h4 class="modal-title">NEW CAR</h4>
                 <button type="button" class="close" data-dismiss="modal">Go to Dealership</button>
             </div>
             <div class="modal-body">
-                <form method="post" action="<?php echo htmlspecialchars("index.php?operation=login"); ?>">
-                    User:<br>
-                    <input name="user" type="text" class="form-control" placeholder="User"><br>
-                    Password:<br>
-                    <input name="password" type="password" class="form-control" placeholder="Password"><br>
-                    <button type="submit" class="btn btn-info form-control">LOGIN</button>
+                <form method="post" action="<?php echo htmlspecialchars("index.php?operation=newcar&userid=".$userid); ?>">
+                    <div id="Brand">
+                        *Brand:<br>
+                        <input name="brand" type="text" class="form-control" placeholder="Brand">
+                    </div>
+                    <div id="Model">
+                        *Model:<br>
+                        <input name="model" type="text" class="form-control" placeholder="Model">
+                    </div>
+                    <div id="Year">
+                        *Year:<br>
+                        <input name="year" type="number" class="form-control" placeholder="Year">
+                    </div>
+                    <div id="Warranty">
+                        *Warranty:<br>
+                        <select name="warranty" class="form-control">
+                            <option value=''>-Select one-</option>
+                            <?php
+                            $war = $carmodel->showwarraty();
+                            foreach($war as $w)
+                            {
+                                echo "<option value='".$w['war_key_inside']."'>".$w['war_months']." Months</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div id="Price">
+                        *Price:<br>
+                        <input name="price" type="number" class="form-control" placeholder="Price">
+                    </div>
+                    <div id="Image">
+                        *Image:<br>
+                        <input name="image" type="file" class="form-control cursor">
+                    </div>
+                    <button type="submit" class="btn btn-info form-control">NEW CAR</button>
                 </form>
             </div>
             <div class="modal-footer">
@@ -103,44 +132,8 @@ if(isset($_SESSION['iduser']))
 
     </div>
 </div>
-<!-- Modal -->
-<div class="modal fade" id="modalsignup" role="dialog">
-    <div class="modal-dialog">
-
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">SIGN UP</h4>
-                <button type="button" class="close" data-dismiss="modal">Go to Dealership</button>
-            </div>
-            <div class="modal-body">
-                <form method="post" action="<?php echo htmlspecialchars("index.php?operation=signup"); ?>">
-                    *Username:<br>
-                    <input name="user" type="text" class="form-control" placeholder="User">
-                    *Password:<br>
-                    <input name="password" type="password" class="form-control" placeholder="Password">
-                    *Name:<br>
-                    <input name="name" type="text" class="form-control" placeholder="Name">
-                    LastName:<br>
-                    <input name="lastname" type="text" class="form-control" placeholder="LastName">
-                    *Email:<br>
-                    <input name="email" type="text" class="form-control" placeholder="Email">
-                    Phone:<br>
-                    <input name="phone" type="text" class="form-control" placeholder="Phone">
-                    Address:<br>
-                    <input name="address" type="text" class="form-control" placeholder="Address"><br>
-                    <button type="submit" class="btn btn-info form-control">SIGNUP</button>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-
-    </div>
-</div>
-<!-- Modal BUY CAR -->
-<div class="modal fade" id="modalbuycar" role="dialog">
+<!-- Modal to edit -->
+<div class="modal fade" id="modaledit" role="dialog">
     <div class="modal-dialog">
 
         <!-- Modal content-->
@@ -202,30 +195,42 @@ if(isset($_SESSION['iduser']))
 
     </div>
 </div>
-<div class="row">
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Brand</th>
+        <th scope="col">Model</th>
+        <th scope="col">Year</th>
+        <th scope="col">Warranty</th>
+        <th scope="col">Price</th>
+        <th scope="col">Image</th>
+        <th scope="col">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalnewcar">
+                New Car
+            </button>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
     <?php
-    $cars = $carmodel->showcars(0);
-    foreach($cars as $key)
+    $data=$carmodel->showcars($userid);
+    foreach($data as $dat)
     {
         ?>
-        <div class="col-md-4">
-            <div class="card mb-4 box-shadow">
-                <img class="card-img-top" data-src="sources/images/<?php echo $key['car_img']; ?>" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;" src="sources/images/<?php echo $key['car_img']; ?>" data-holder-rendered="true">
-                <div class="card-body">
-                    <p class="card-text descriptionCar"><?php echo $key['car_brand']; ?></p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-muted">
-                            <a href="index.php?operation=buy&car_id=<?php echo $key['car_key_inside']; ?>" class="btn btn-success text-white cursor form-control">
-                                BUY
-                            </a>
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <tr>
+            <td><?php echo $dat["car_brand"]; ?></td>
+            <td><?php echo $dat["car_model"]; ?></td>
+            <td><?php echo $dat["car_year"]; ?></td>
+            <td><?php echo $dat["war_months"]; ?></td>
+            <td><?php echo $dat["car_price"]; ?></td>
+            <td><?php echo '<img src="sources/images/audi.jpg" class="imagecar">'; ?></td>
+            <td><a class="fa fa-edit cursor" title="Edit" data-toggle="modal" data-target="#modaledit"><a></td>
+        </tr>
     <?php
     }
     ?>
-</div>
+    </tbody>
+</table>
+
 </body>
 </html>

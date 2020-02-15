@@ -1,4 +1,4 @@
-CREATE TABLE "public"."warranty" (
+CREATE TABLE "public"."warranties" (
   war_key_inside SERIAL NOT NULL PRIMARY KEY,
   war_months int4 NOT NULL
 ) WITH (OIDS=FALSE);
@@ -14,6 +14,8 @@ CREATE TABLE "public"."cars" (
   car_img varchar(100) NOT NULL
 ) WITH (OIDS=FALSE);
 
+ALTER TABLE public.cars ADD COLUMN use_key_inside int4 NULL REFERENCES public.users(use_key_inside);
+
 
 CREATE TABLE "public"."users" (
   use_key_inside SERIAL NOT NULL PRIMARY KEY,
@@ -27,8 +29,10 @@ CREATE TABLE "public"."users" (
   use_profile int4 NOT NULL DEFAULT 2
 ) WITH (OIDS=FALSE);
 
+ALTER TABLE public.users ALTER COLUMN use_password TYPE varchar(200);
 
-CREATE TABLE "public"."loan" (
+
+CREATE TABLE "public"."loans" (
   lon_key_inside SERIAL NOT NULL PRIMARY KEY,
   lon_months int4 NOT NULL
 ) WITH (OIDS=FALSE);
@@ -40,9 +44,15 @@ CREATE TABLE "public"."users_cars" (
   car_key_inside int4 NOT NULL REFERENCES public.cars(car_key_inside),
   usc_sw_email int4 NOT NULL,
   usc_payment_method varchar(50) NOT NULL,
-  usc_sw_loan int4 NOT NULL,
+  usc_loan float NOT NULL,
   usc_cash float NOT NULL,
   lon_key_inside int4 NOT NULL REFERENCES public.loan(lon_key_inside)
 ) WITH (OIDS=FALSE);
+
+ALTER TABLE public.users_cars RENAME COLUMN usc_sw_loan TO usc_loan;
+ALTER TABLE public.users_cars ALTER COLUMN usc_loan TYPE float;
+ALTER TABLE public.users_cars ALTER COLUMN usc_loan SET DEFAULT 0;
+ALTER TABLE public.users_cars ALTER COLUMN usc_cash SET DEFAULT 0;
+ALTER TABLE public.users_cars ALTER COLUMN lon_key_inside DROP NOT NULL;
 
 select use_name,use_lastname,use_username,use_password,use_profile from users where UPPER(use_username) = UPPER('luis') and UPPER(use_password) = UPPER('luis123')
