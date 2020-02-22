@@ -1,0 +1,249 @@
+<?php
+$username = "";
+$password = "";
+$profile = "";
+$userid = "";
+if(isset($_SESSION['user']))
+{
+    $username = $_SESSION['user'];
+}
+if(isset($_SESSION['password']))
+{
+    $password = $_SESSION['password'];
+}
+if(isset($_SESSION['profile']))
+{
+    $profile = $_SESSION['profile'];
+}
+if(isset($_SESSION['iduser']))
+{
+    $userid = $_SESSION['iduser'];
+}
+?>
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <link rel="stylesheet" href="sources/css/main.css?<?php echo time(); ?>" />
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">    <!--This is the CDN to connect with BootstrapCDN CSS-->
+    <!-- JS AND JQUERY -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>    <meta charset="UTF-8">
+    <!-- CDN FOR ICONS CART -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- CDN JS FUNCTIONS -->
+    <script src="sources/js/functions.js?<?php echo time(); ?>"></script>
+
+    <link rel="stylesheet" href="sources/lib/dropify-master/dist/css/dropify.css?<?php echo time(); ?>"/>
+    <script src="sources/lib/dropify-master/dist/js/dropify.js"></script>
+    <script src="upload.js"></script>
+    <title>DealershipLuis</title>
+</head>
+<body class="margin">
+<nav class="navbar navbar-expand-lg navbar-dark bg-info">
+    <div class="left">
+        <a class="navbar-brand" href="index.php?operation=gotodealership">DEALERSHIP </a>|
+
+        <?php
+        if(isset($username))
+        {
+            if($username != "" and ($profile == 1 or $profile == 2))
+            {
+                echo '<a class="navbar-brand" href="index.php?operation=gotocars">&nbsp;CARS </a>|';
+            }
+
+            if($username != "" and $profile == 1)
+            {
+                ?>
+                <a class="navbar-brand" href="#">&nbsp;USERS </a>|
+                <?php
+            }
+        }
+        ?>
+    </div>
+    <div class="right">
+        <?php
+        if(isset($username))
+        {
+            if($username != "")
+            {
+                echo '<a class="navbar-brand text-white">Welcome '.$username."</a>";
+                echo '<a href="index.php?operation=logout" class="navbar-brand text-white cursor">LOGOUT</a>';
+            }
+            else
+            {
+                ?>
+                <a class="navbar-brand text-white cursor" data-toggle="modal" data-target="#modallogin">LOGIN</a>|
+                <a class="navbar-brand text-white cursor" data-toggle="modal" data-target="#modalsignup">&nbsp;SIGN UP </a>
+                <?php
+            }
+        }
+        ?>
+    </div>
+</nav>
+<!-- Modal to new user -->
+<div class="modal fade" id="modalnewuser" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">NEW USER</h4>
+                <button type="button" class="close" data-dismiss="modal">Go to Users</button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="<?php echo htmlspecialchars("index.php?operation=newuser"); ?>">
+                    <div id="username">
+                        *User name:<br>
+                        <input name="user" type="text" class="form-control" placeholder="User name">
+                    </div>
+                    <div id="password">
+                        *Password:<br>
+                        <input name="password" type="password" class="form-control" placeholder="Password">
+                    </div>
+                    <div id="name">
+                        *Name:<br>
+                        <input name="name" type="text" class="form-control" placeholder="Name">
+                    </div>
+                    <div id="lastname">
+                        Last Name:<br>
+                        <input name="lastname" type="text" class="form-control" placeholder="Last Name">
+                    </div>
+                    <div id="phone">
+                        *Phone:<br>
+                        <input name="phone" type="number" class="form-control" placeholder="Phone">
+                    </div>
+                    <div id="email">
+                        *Email:<br>
+                        <input name="email" type="email" class="form-control" placeholder="Email">
+                    </div>
+                    <div id="address">
+                        Address:<br>
+                        <input name="address" type="text" class="form-control" placeholder="Address">
+                    </div>
+                    <div id="profile">
+                        *Profile:<br>
+                        <select name="profile" class="form-control">
+                            <option value=''>-Select profile-</option>
+                            <option value='1'>Administrator</option>
+                            <option value='2'>Client</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-info form-control">NEW USER</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- Modal to edit -->
+<div class="modal fade" id="modaledit" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">EDIT USER</h4>
+                <button type="button" class="close" data-dismiss="modal">Go to Users</button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="<?php echo htmlspecialchars("index.php?operation=edituser"); ?>">
+                    <div id="username">
+                        *User name:<br>
+                        <input name="user" id="inputuser" type="text" class="form-control" placeholder="User name">
+                    </div>
+                    <div id="password">
+                        Old password (optional):<br>
+                        <input name="oldpassword" type="password" class="form-control" placeholder="Password">
+                        New password (optional):<br>
+                        <input name="newpassword" type="password" class="form-control" placeholder="Password">
+                        Confirm password (optional):<br>
+                        <input name="confirmpassword" type="password" class="form-control" placeholder="Password">
+                    </div>
+                    <div id="name">
+                        *Name:<br>
+                        <input name="name" id="inputname" type="text" class="form-control" placeholder="Name">
+                    </div>
+                    <div id="lastname">
+                        Last Name:<br>
+                        <input name="lastname" id="inputlastname" type="text" class="form-control" placeholder="Last Name">
+                    </div>
+                    <div id="phone">
+                        *Phone:<br>
+                        <input name="phone" id="inputphone" type="number" class="form-control" placeholder="Phone">
+                    </div>
+                    <div id="email">
+                        *Email:<br>
+                        <input name="email" id="inputemail" type="email" class="form-control" placeholder="Email">
+                    </div>
+                    <div id="address">
+                        Address:<br>
+                        <input name="address" id="inputaddress" type="text" class="form-control" placeholder="Address">
+                    </div>
+                    <div id="profile">
+                        *Profile:<br>
+                        <select name="profile" id="inputprofile" class="form-control">
+                            <option value=''>-Select profile-</option>
+                            <option value='1'>Administrator</option>
+                            <option value='2'>Client</option>
+                        </select>
+                    </div>
+                    <input type="hidden" name="iduserhidden" id="iduserhidden" value="">
+                    <button type="submit" class="btn btn-info form-control">EDIT USER</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<h2>Search by User-name, name, last name</h2>
+<input type="text" name="search" class="form-control" placeholder="Search by User-name, name, last name" onkeyup="searchuser(this.value)">
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">User name</th>
+        <th scope="col">Name</th>
+        <th scope="col">Last name</th>
+        <th scope="col">Phone</th>
+        <th scope="col">Email</th>
+        <th scope="col">Address</th>
+        <th scope="col">Profile</th>
+        <th scope="col"></th>
+        <th scope="col">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalnewuser">
+                New User
+            </button>
+        </th>
+    </tr>
+    </thead>
+    <tbody id="rowusers">
+    <?php
+    $data=$usermodel->showusers();
+    foreach($data as $dat)
+    {
+        ?>
+        <tr id="rowusers<?php echo $dat["use_key_inside"]; ?>">
+            <td><?php echo $dat["use_username"]; ?></td>
+            <td><?php echo $dat["use_name"]; ?></td>
+            <td><?php echo $dat["use_lastname"]; ?></td>
+            <td><?php echo $dat["use_phone"]; ?></td>
+            <td><?php echo $dat["use_email"]; ?></td>
+            <td><?php echo $dat["use_address"]; ?></td>
+            <td><?php echo $dat["use_profile"]; ?></td>
+            <td><a class="fa fa-edit cursor" onclick="edituser('<?php echo $dat["use_key_inside"]; ?>')" title="Edit"><a></td>
+            <td><a class="fa fa-trash cursor" onclick="deleteuser('<?php echo $dat["use_key_inside"]; ?>')" title="Delete"><a></td>
+        </tr>
+    <?php
+    }
+    ?>
+    </tbody>
+</table>
+
+</body>
+</html>

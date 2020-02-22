@@ -33,12 +33,16 @@ if(isset($_SESSION['iduser']))
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <!-- CDN JS FUNCTIONS -->
     <script src="sources/js/functions.js?<?php echo time(); ?>"></script>
+    <!-- CDN by libraries for pictures -->
+    <link rel="stylesheet" href="sources/lib/dropify-master/dist/css/dropify.css?<?php echo time(); ?>"/>
+    <script src="sources/lib/dropify-master/dist/js/dropify.js"></script>
+    <script src="upload.js"></script>
     <title>DealershipLuis</title>
 </head>
 <body class="margin">
 <nav class="navbar navbar-expand-lg navbar-dark bg-info">
     <div class="left">
-        <a class="navbar-brand" href="#">DEALERSHIP </a>|
+        <a class="navbar-brand" href="index.php?operation=gotodealership">DEALERSHIP </a>|
 
         <?php
         if(isset($username))
@@ -51,7 +55,7 @@ if(isset($_SESSION['iduser']))
             if($username != "" and $profile == 1)
             {
                 ?>
-                <a class="navbar-brand" href="#">&nbsp;USERS </a>|
+                <a class="navbar-brand" href="index.php?operation=gotousers">&nbsp;USERS </a>|
                 <?php
             }
         }
@@ -84,11 +88,11 @@ if(isset($_SESSION['iduser']))
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">NEW CAR</h4>
-                <button type="button" class="close" data-dismiss="modal">Go to Dealership</button>
+                <h4 class="modal-title">NEW CAR TO SELL</h4>
+                <button type="button" class="close" data-dismiss="modal">Go to Sell Cars</button>
             </div>
             <div class="modal-body">
-                <form method="post" action="<?php echo htmlspecialchars("index.php?operation=newcar&userid=".$userid); ?>">
+                <form method="post" name="formcars" id="formcars" enctype="multipart/form-data" action="<?php echo htmlspecialchars("index.php?operation=newcar&userid=".$userid); ?>">
                     <div id="Brand">
                         *Brand:<br>
                         <input name="brand" type="text" class="form-control" placeholder="Brand">
@@ -120,9 +124,9 @@ if(isset($_SESSION['iduser']))
                     </div>
                     <div id="Image">
                         *Image:<br>
-                        <input name="image" type="file" class="form-control cursor">
+                        <input type="file" id="imgcar" name="imgcar" data-allowed-file-extensions="png jpg gif jpge bmp" class="dropify profile-user-img img-responsive img-circle" data-default-file="" data-height="128"  data-min-width="128"  data-show-remove="false">
                     </div>
-                    <button type="submit" class="btn btn-info form-control">NEW CAR</button>
+                    <button type="submit" class="btn btn-info form-control">NEW CAR TO SELL</button>
                 </form>
             </div>
             <div class="modal-footer">
@@ -139,53 +143,47 @@ if(isset($_SESSION['iduser']))
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">BUY CAR</h4>
+                <h4 class="modal-title">EDIT CAR</h4>
                 <button type="button" class="close" data-dismiss="modal">Go to Dealership</button>
             </div>
             <div class="modal-body">
-                <?php
-                $idcar = $_GET['car_id'];
-                $result = $carmodel->pricecar($idcar);
-                ?>
-                <form method="post" action="<?php echo htmlspecialchars("index.php?operation=confirmbuy&car_id=".$idcar."&userid=".$userid); ?>">
-                    <div class="col-md-12">
-                        <div class="card mb-4 box-shadow">
-                            <img class="card-img-top" data-src="sources/images/<?php echo $result[0]['car_img']; ?>" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;" src="sources/images/<?php echo $result[0]['car_img']; ?>" data-holder-rendered="true">
-                            <div class="card-body">
-                                <p class="card-text descriptionCar"><?php echo "$".number_format($result[0]['car_price'],2); ?></p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                </div>
-                            </div>
-                        </div>
+                <form method="post" enctype="multipart/form-data" action="<?php echo htmlspecialchars("index.php?operation=editcar&userid=".$userid); ?>">
+                    <div id="Brand">
+                        *Brand:<br>
+                        <input name="brand" id="brand" type="text" class="form-control" placeholder="Brand">
                     </div>
-                    *Payment method:<br>
-                    <select name="method" class="form-control" onchange="showmethod(this.value)">
-                        <option value="">-Select method-</option>
-                        <option value="cash">Cash</option>
-                        <option value="loan">Loan</option>
-                        <option value="both">Both</option>
-                    </select>
-                    <div id="cash">
-                        *Cash:<br>
-                        <input name="cash" type="number" class="form-control" placeholder="Cash">
+                    <div id="Model">
+                        *Model:<br>
+                        <input name="model" id="model" type="text" class="form-control" placeholder="Model">
                     </div>
-                    <div id="loan">
-                        *Loan:<br>
-                        <input name="loan" type="text" class="form-control" placeholder="Loan">
+                    <div id="Year">
+                        *Year:<br>
+                        <input name="year" id="year" type="number" class="form-control" placeholder="Year">
                     </div>
-                    <div id="time">
-                        *Time loan:<br>
-                        <select name="time" class="form-control">
+                    <div id="Warranty">
+                        *Warranty:<br>
+                        <select name="warranty" id="warranty" class="form-control">
+                            <option value=''>-Select one-</option>
                             <?php
-                            $loans = $carmodel->showloans();
-                            foreach($loans as $loa)
+                            $war = $carmodel->showwarraty();
+                            foreach($war as $w)
                             {
-                                echo '<option value="'.$loa['lon_key_inside'].'">'.$loa['lon_months'].'</option>';
+                                echo "<option value='".$w['war_key_inside']."'>".$w['war_months']." Months</option>";
                             }
                             ?>
-                        </select><br>
+                        </select>
                     </div>
-                    <button type="submit" class="btn btn-info form-control">BUY CAR</button>
+                    <div id="Price">
+                        *Price:<br>
+                        <input name="price" id="price" type="number" class="form-control" placeholder="Price">
+                    </div>
+                    <img src="" id="neweditpicture" class="imagecar">
+                    <div id="Image">
+                        *Image:<br>
+                        <input type="file" value="" id="imgcaredit" name="imgcaredit" data-allowed-file-extensions="png jpg gif jpge bmp" class="dropify profile-user-img img-responsive img-circle" data-default-file="" data-height="128"  data-min-width="128"  data-show-remove="false">
+                    </div>
+                    <input type="hidden" name="idcarhidden" id="idcarhidden" value="">
+                    <button type="submit" class="btn btn-info form-control">EDIT CAR TO SELL</button>
                 </form>
             </div>
             <div class="modal-footer">
@@ -195,6 +193,8 @@ if(isset($_SESSION['iduser']))
 
     </div>
 </div>
+<h2>Search by Brand or Model</h2>
+<input type="text" name="search" class="form-control" placeholder="Search by Brand or Model" onkeyup="searchcar(this.value,<?php echo $userid; ?>)">
 <table class="table">
     <thead>
     <tr>
@@ -204,33 +204,76 @@ if(isset($_SESSION['iduser']))
         <th scope="col">Warranty</th>
         <th scope="col">Price</th>
         <th scope="col">Image</th>
+        <th scope="col"></th>
         <th scope="col">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalnewcar">
-                New Car
+                New Car to sell
             </button>
         </th>
     </tr>
     </thead>
-    <tbody>
+    <tbody id="rowscars">
     <?php
     $data=$carmodel->showcars($userid);
     foreach($data as $dat)
     {
         ?>
-        <tr>
+        <tr id="rowcar<?php echo $dat["car_key_inside"]; ?>">
             <td><?php echo $dat["car_brand"]; ?></td>
             <td><?php echo $dat["car_model"]; ?></td>
             <td><?php echo $dat["car_year"]; ?></td>
             <td><?php echo $dat["war_months"]; ?></td>
             <td><?php echo $dat["car_price"]; ?></td>
-            <td><?php echo '<img src="sources/images/audi.jpg" class="imagecar">'; ?></td>
-            <td><a class="fa fa-edit cursor" title="Edit" data-toggle="modal" data-target="#modaledit"><a></td>
+            <td><?php echo '<img src="sources/images/'.$dat["car_img"].'" class="imagecar">'; ?></td>
+            <td><a class="fa fa-edit cursor" onclick="editsellcar('<?php echo $dat["car_key_inside"]; ?>')" title="Edit"><a></td>
+            <td><a class="fa fa-trash cursor" onclick="deletecar('<?php echo $dat["car_key_inside"]; ?>')" title="Delete"><a></td>
         </tr>
     <?php
     }
     ?>
     </tbody>
 </table>
+<script type="text/javascript">
+    $(document).ready(function(){
+        // Basic
+        $('.dropify').dropify();
 
+        // Translated
+        $('.dropify-fr').dropify({
+            messages: {
+                default: 'Glissez-déposez un fichier ici ou cliquez',
+                replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
+                remove:  'Supprimer',
+                error:   'Désolé, le fichier trop volumineux'
+            }
+        });
+
+        // Used events
+        var drEvent = $('#input-file-events').dropify();
+
+        drEvent.on('dropify.beforeClear', function(event, element){
+            return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
+        });
+
+        drEvent.on('dropify.afterClear', function(event, element){
+            alert('File deleted');
+        });
+
+        drEvent.on('dropify.errors', function(event, element){
+            console.log('Has Errors');
+        });
+
+        var drDestroy = $('#input-file-to-destroy').dropify();
+        drDestroy = drDestroy.data('dropify')
+        $('#toggleDropify').on('click', function(e){
+            e.preventDefault();
+            if (drDestroy.isDropified()) {
+                drDestroy.destroy();
+            } else {
+                drDestroy.init();
+            }
+        })
+    });
+</script>
 </body>
 </html>

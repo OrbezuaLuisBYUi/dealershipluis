@@ -15,7 +15,7 @@ CREATE TABLE "public"."cars" (
 ) WITH (OIDS=FALSE);
 
 ALTER TABLE public.cars ADD COLUMN use_key_inside int4 NULL REFERENCES public.users(use_key_inside);
-
+update public.cars set car_brand = 'Toyota',car_model = '1200',car_year = 3000,war_key_inside = 2,car_price = 50000,use_key_inside = 62 where car_key_inside = 8
 
 CREATE TABLE "public"."users" (
   use_key_inside SERIAL NOT NULL PRIMARY KEY,
@@ -30,7 +30,7 @@ CREATE TABLE "public"."users" (
 ) WITH (OIDS=FALSE);
 
 ALTER TABLE public.users ALTER COLUMN use_password TYPE varchar(200);
-
+select use_key_inside,use_username,use_password,use_name,use_lastname,use_phone,use_email,use_address,CASE use_profile WHEN 1 THEN 'Administrator' ELSE 'Client' END use_profile from public.users
 
 CREATE TABLE "public"."loans" (
   lon_key_inside SERIAL NOT NULL PRIMARY KEY,
