@@ -41,6 +41,10 @@ if(isset($_REQUEST['operation']))
         {
             if(isset($_SESSION['user']))
             {
+                $_SESSION['user'] = "";
+                $_SESSION['password']= "";
+                $_SESSION['profile']= "";
+                $_SESSION['iduser'] = "";
                 session_destroy();
             }
             require_once("views/dealerview.phtml");
@@ -470,5 +474,9 @@ if(isset($_REQUEST['operation']))
 else
 {
     session_start();
+    $_SESSION['user'] = "";
+    $_SESSION['password']= "";
+    $_SESSION['profile']= "";
+    $_SESSION['iduser'] = "";
     require_once("views/dealerview.phtml");
 }
