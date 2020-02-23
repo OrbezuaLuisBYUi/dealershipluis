@@ -112,7 +112,7 @@ function searchuser(search)
 }
 function deletecar(id)
 {
-    if(confirm("I your sure? Do you want ti delete this car"))
+    if(confirm("Are you sure? Do you want to delete this care?"))
     {
         $.post('index.php', { operation: 'deletecar',idcar:id }, function(data){
             if(data > 0)
@@ -128,7 +128,7 @@ function deletecar(id)
 }
 function deleteuser(id)
 {
-    if(confirm("I your sure? Do you want ti delete this user"))
+    if(confirm("Are you sure? Do you want to delete this user?"))
     {
         $.post('index.php', { operation: 'deleteuser',iduser:id }, function(data){
 
@@ -139,7 +139,7 @@ function deleteuser(id)
             else
             if(data == -1)
             {
-                alert("This user have already bought cars, it is not posible to delete");
+                alert("This user have already bought cars, it is not possible to delete");
             }
             else
             {

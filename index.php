@@ -126,7 +126,7 @@ if(isset($_REQUEST['operation']))
             }
             else
             {
-                echo "<script>if(confirm('To buy you need to sign up')){ $('#modalsignup').modal('toggle');$('#modalsignup').modal('show'); }else{ $('#modallogin').modal('toggle');$('#modallogin').modal('show'); }</script>";
+                echo "<script>if(confirm('To buy, you need to sign up')){ $('#modalsignup').modal('toggle');$('#modalsignup').modal('show'); }else{ $('#modallogin').modal('toggle');$('#modallogin').modal('show'); }</script>";
             }
 
             $car_id = $_GET['car_id'];
@@ -383,7 +383,7 @@ if(isset($_REQUEST['operation']))
                 else
                 if($oldpassword != "" and ($newpassword != $confirmpassword))
                 {
-                    echo "<script>alert('Passwords no macths')</script>";
+                    echo "<script>alert('Passwords no matth')</script>";
                 }
                 else
                 if($name=="")
